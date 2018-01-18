@@ -4,6 +4,10 @@
     <string name="label_activity_login">Sign in</string>
     <string name="label_activity_issue_board">Dashboard</string>
     <string name="label_activity_issue_detail">Detail</string>
+    <string name="label_issue_id">Issue Id: </string>
+    <string name="label_issue_product_name">Product Name: </string>
+    <string name="label_issue_assign_to">Assign to: </string>
+    <string name="label_issue_detail">Detail: </string>
 
     <string name="hint_id">Username</string>
     <string name="hint_password">Password</string>

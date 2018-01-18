@@ -8,13 +8,13 @@ import java.util.Locale;
 
 public class Note {
     private String createBy;
-    private int createTime;
+    private long createTime;
     private String detail;
 
     public Note() {
     }
 
-    public Note(String createBy, int createTime, String detail) {
+    public Note(String createBy, long createTime, String detail) {
         this.createBy = createBy;
         this.createTime = createTime;
         this.detail = detail;
@@ -24,7 +24,7 @@ public class Note {
         return createBy;
     }
 
-    public int getCreateTime() {
+    public long getCreateTime() {
         return createTime;
     }
 
@@ -32,7 +32,7 @@ public class Note {
         return detail;
     }
 
-    public String getDateTime(int epoch) {
+    public String getDateTime(long epoch) {
         return new java.text.SimpleDateFormat("MM/dd/yyyy HH:mm:ss", Locale.US)
                 .format(new java.util.Date(epoch * 1000));
     }

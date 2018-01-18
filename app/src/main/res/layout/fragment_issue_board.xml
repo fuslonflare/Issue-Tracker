@@ -4,7 +4,7 @@
     android:orientation="vertical"
     android:layout_height="match_parent">
 
-    <csd.gisc.issuetracker.view.SlidingTabLayout
+    <TableLayout
         android:id="@+id/sliding_tab_layout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content" />

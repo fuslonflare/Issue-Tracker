@@ -18,7 +18,7 @@
             android:background="?attr/colorPrimary"
             android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar" />
 
-        <csd.gisc.issuetracker.view.SlidingTabLayout
+        <android.support.design.widget.TabLayout
             android:id="@+id/sliding_tab_layout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content" />

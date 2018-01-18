@@ -2,6 +2,7 @@ package csd.gisc.issuetracker.activity;
 
 import android.content.res.Configuration;
 import android.support.annotation.Nullable;
+import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentStatePagerAdapter;
 import android.support.v4.view.ViewPager;
@@ -11,7 +12,6 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
-import android.view.View;
 import android.widget.ImageView;
 
 import com.bumptech.glide.Glide;
@@ -20,16 +20,14 @@ import com.bumptech.glide.request.RequestOptions;
 import csd.gisc.issuetracker.R;
 import csd.gisc.issuetracker.fragment.ClosedIssueFragment;
 import csd.gisc.issuetracker.fragment.InProgressIssueFragment;
-import csd.gisc.issuetracker.fragment.IssueBoardFragment;
 import csd.gisc.issuetracker.fragment.NewIssueFragment;
-import csd.gisc.issuetracker.view.SlidingTabLayout;
 
 public class IssueBoardActivity extends AppCompatActivity {
 
     private static final int SIZE_PAGE = 3;
 
     private ViewPager pagerIssueBoard;
-    private SlidingTabLayout slidingTabLayout;
+    private TabLayout tabLayout;
 
     Toolbar toolbar;
     DrawerLayout drawerLayout;
@@ -67,7 +65,7 @@ public class IssueBoardActivity extends AppCompatActivity {
                 .into(imageProfile);
 
         pagerIssueBoard = findViewById(R.id.pager_issue_board);
-        slidingTabLayout = findViewById(R.id.sliding_tab_layout);
+        tabLayout = findViewById(R.id.sliding_tab_layout);
 
         pagerIssueBoard.setAdapter(new FragmentStatePagerAdapter(getSupportFragmentManager()) {
             @Override
@@ -95,7 +93,10 @@ public class IssueBoardActivity extends AppCompatActivity {
             }
         });
 
-        slidingTabLayout.setViewPager(pagerIssueBoard);
+        tabLayout.setupWithViewPager(pagerIssueBoard);
+        tabLayout.getTabAt(0).setIcon(R.drawable.ic_new_releases);
+        tabLayout.getTabAt(1).setIcon(R.drawable.ic_rowing);
+        tabLayout.getTabAt(2).setIcon(R.drawable.ic_check_circle);
     }
 
     @Override

@@ -1,54 +1,86 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
-    
-<LinearLayout
-    android:layout_width="match_parent"
     android:layout_height="match_parent"
     xmlns:tools="http://schemas.android.com/tools"
-    android:orientation="vertical"
-    android:padding="16dp">
+    android:padding="@dimen/default_padding">
 
-    <android.support.v7.widget.AppCompatTextView
-        android:id="@+id/text_issue_id"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Issue ID: 1412" />
-
-    <android.support.v7.widget.AppCompatTextView
-        android:id="@+id/text_issue_product_name"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Product Name: NOSTRA Logistics Version 2" />
-
-    <android.support.v7.widget.AppCompatTextView
-        android:id="@+id/text_issue_status"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Status: InProgress" />
-
-    <android.support.v7.widget.AppCompatTextView
-        android:id="@+id/text_issue_assign_to"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Assign To: Sukrit Seeta" />
-
-    <android.support.v7.widget.AppCompatTextView
-        android:id="@+id/text_issue_detail"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Detail: Fix Advance Report" />
-
-    <android.support.v7.widget.RecyclerView
-        android:layout_marginTop="16dp"
-        android:id="@+id/list_comment"
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        tools:listitem="@layout/list_item_comment"/>
+        android:orientation="vertical">
 
-</LinearLayout>
-    
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:orientation="vertical">
+
+            <android.support.v7.widget.AppCompatTextView
+                android:id="@+id/text_issue_id"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/label_issue_id"
+                android:textSize="@dimen/large_text_size" />
+
+            <android.support.v7.widget.AppCompatTextView
+                android:id="@+id/text_issue_product_name"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/label_issue_product_name"
+                android:textSize="@dimen/large_text_size" />
+
+            <android.support.v7.widget.AppCompatTextView
+                android:id="@+id/text_issue_assign_to"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/label_issue_assign_to"
+                android:textSize="@dimen/large_text_size" />
+
+            <android.support.v7.widget.AppCompatTextView
+                android:id="@+id/text_issue_detail"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/label_issue_detail"
+                android:textSize="@dimen/large_text_size" />
+
+            <android.support.v7.widget.RecyclerView
+                android:id="@+id/list_comment"
+                tools:listitem="@layout/list_item_comment"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_marginTop="@dimen/large_margin" />
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <android.support.v7.widget.AppCompatEditText
+                android:layout_width="0dp"
+                android:id="@+id/edit_note_message"
+                android:layout_height="wrap_content"
+                android:layout_weight="1" />
+
+            <android.support.v7.widget.AppCompatButton
+                android:layout_width="wrap_content"
+                android:id="@+id/button_send"
+                android:layout_height="wrap_content"
+                android:text="Send" />
+
+        </LinearLayout>
+
+    </LinearLayout>
+
+    <ImageView
+        android:id="@+id/image_status"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentTop="true"
+        android:src="@drawable/ic_new_releases" />
 
 
 </RelativeLayout>
