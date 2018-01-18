@@ -1,14 +1,33 @@
 package csd.gisc.issuetracker.fragment;
 
 import android.os.Bundle;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v7.widget.AppCompatTextView;
+import android.support.v7.widget.DefaultItemAnimator;
+import android.support.v7.widget.DividerItemDecoration;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ListView;
+import android.widget.Toast;
+
+import com.firebase.ui.database.FirebaseRecyclerAdapter;
+import com.firebase.ui.database.FirebaseRecyclerOptions;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.Query;
+import com.google.firebase.database.ValueEventListener;
 
 import csd.gisc.issuetracker.R;
-import csd.gisc.issuetracker.adapter.IssueCommentAdapter;
+import csd.gisc.issuetracker.model.Issue;
+import csd.gisc.issuetracker.model.Note;
+import csd.gisc.issuetracker.view.holder.NoteViewHolder;
 
 /**
  * Created by admin on 22/12/2560.
@@ -16,43 +35,113 @@ import csd.gisc.issuetracker.adapter.IssueCommentAdapter;
 
 public class IssueDetailFragment extends Fragment {
 
-    private ListView listComment;
+    private static final String TAG = IssueDetailFragment.class.getSimpleName() + "TAG";
+
+    private RecyclerView listComment;
+    private LinearLayoutManager linearLayoutManager;
+    private DividerItemDecoration dividerItemDecoration;
+    private AppCompatTextView textIssueId;
+    private AppCompatTextView textProductName;
+    private AppCompatTextView textStatus;
+    private AppCompatTextView textAssignTo;
+    private AppCompatTextView textDetail;
+
+    private DatabaseReference mIssueRef;
+    private DatabaseReference mCommentsRef;
+    private DatabaseReference mRootRef;
+    private FirebaseRecyclerOptions<Note> options;
+    private FirebaseRecyclerAdapter<Note, NoteViewHolder> mAdapter;
+
+    private ValueEventListener valueEventListener;
+
+    private String issueKey;
 
     public IssueDetailFragment() {
         super();
     }
 
-    public static IssueDetailFragment newInstance() {
+    public static IssueDetailFragment newInstance(String issueKey) {
         IssueDetailFragment fragment = new IssueDetailFragment();
         Bundle args = new Bundle();
+        args.putString("issue_key", issueKey);
         fragment.setArguments(args);
         return fragment;
     }
 
     @Override
-    public View onCreateView(LayoutInflater inflater,
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        if (getArguments() != null) {
+            issueKey = getArguments().getString("issue_key");
+        }
+
+        mRootRef = FirebaseDatabase.getInstance().getReference();
+        mIssueRef = mRootRef.child("issues").child(issueKey);
+        mCommentsRef = mRootRef.child("issues-notes").child(issueKey);
+    }
+
+    @Override
+    public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container,
                              Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.fragment_issue_detail, container, false);
-        initInstances(rootView);
+        initUi(rootView);
         return rootView;
     }
 
-    private void initInstances(View rootView) {
-        IssueCommentAdapter adapter = new IssueCommentAdapter();
+    private void initUi(View rootView) {
+        textIssueId = rootView.findViewById(R.id.text_issue_id);
+        textProductName = rootView.findViewById(R.id.text_issue_product_name);
+        textStatus = rootView.findViewById(R.id.text_issue_status);
+        textAssignTo = rootView.findViewById(R.id.text_issue_assign_to);
+        textDetail = rootView.findViewById(R.id.text_issue_detail);
 
         listComment = rootView.findViewById(R.id.list_comment);
-        listComment.setAdapter(adapter);
+        linearLayoutManager = new LinearLayoutManager(getContext());
+        DividerItemDecoration dividerItemDecoration = new DividerItemDecoration(
+                listComment.getContext(), linearLayoutManager.getOrientation());
+        listComment.addItemDecoration(dividerItemDecoration);
+        listComment.setLayoutManager(linearLayoutManager);
+        listComment.setItemAnimator(new DefaultItemAnimator());
     }
 
     @Override
     public void onStart() {
         super.onStart();
+
+        valueEventListener = new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                Issue issue = dataSnapshot.getValue(Issue.class);
+                if (issue != null) {
+                    textIssueId.setText(String.valueOf(issue.getId()));
+                    textProductName.setText(issue.getProductName());
+                    textStatus.setText(issue.getStatus().name());
+                    textAssignTo.setText(issue.getAssignTo());
+                    textDetail.setText(issue.getDetail());
+                }
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+                Log.e(TAG, databaseError.getMessage(), databaseError.toException());
+                showToast("Failed to load comments.");
+            }
+        };
+
+        mIssueRef.addValueEventListener(valueEventListener);
+        mAdapter.startListening();
     }
 
     @Override
     public void onStop() {
         super.onStop();
+
+        if (valueEventListener != null) {
+            mIssueRef.removeEventListener(valueEventListener);
+        }
+
+        mAdapter.stopListening();
     }
 
     /*
@@ -73,5 +162,35 @@ public class IssueDetailFragment extends Fragment {
         if (savedInstanceState != null) {
             // Restore Instance State here
         }
+
+        Query query = mCommentsRef.orderByChild("createTime");
+
+        options = new FirebaseRecyclerOptions.Builder<Note>()
+                .setQuery(query, Note.class)
+                .build();
+
+        mAdapter = new FirebaseRecyclerAdapter<Note, NoteViewHolder>(options) {
+            @Override
+            public NoteViewHolder onCreateViewHolder(ViewGroup parent,
+                                                     int viewType) {
+                View view = LayoutInflater.from(parent.getContext())
+                        .inflate(R.layout.list_item_comment, parent, false);
+
+                return new NoteViewHolder(view);
+            }
+
+            @Override
+            protected void onBindViewHolder(@NonNull NoteViewHolder holder,
+                                            int position,
+                                            @NonNull Note model) {
+                holder.bindToNote(model);
+            }
+        };
+
+        listComment.setAdapter(mAdapter);
+    }
+
+    private void showToast(CharSequence message) {
+        Toast.makeText(getContext(), message, Toast.LENGTH_SHORT).show();
     }
 }

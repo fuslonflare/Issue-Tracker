@@ -18,9 +18,13 @@ public class IssueDetailActivity extends AppCompatActivity {
 
         initInstances();
 
-        getSupportFragmentManager().beginTransaction()
-                .add(R.id.content_area, IssueDetailFragment.newInstance())
-                .commit();
+        String issueKey = getIntent().getStringExtra("issue_key");
+
+        if (savedInstanceState == null) {
+            getSupportFragmentManager().beginTransaction()
+                    .add(R.id.content_area, IssueDetailFragment.newInstance(issueKey))
+                    .commit();
+        }
     }
 
     private void initInstances() {

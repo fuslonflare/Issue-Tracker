@@ -87,12 +87,12 @@ public abstract class IssueListFragment extends Fragment
         recyclerView = rootView.findViewById(R.id.list_issue);
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
         recyclerView.setItemAnimator(new DefaultItemAnimator());
-        recyclerView.addItemDecoration(
-                new DividerItemDecoration(context, DividerItemDecoration.VERTICAL));
-
-        ItemTouchHelper.SimpleCallback itemTouchHelperCallback =
-                new RecyclerItemTouchHelper(0, ItemTouchHelper.LEFT, this);
-        new ItemTouchHelper(itemTouchHelperCallback).attachToRecyclerView(recyclerView);
+//        recyclerView.addItemDecoration(
+//                new DividerItemDecoration(context, DividerItemDecoration.VERTICAL));
+//
+//        ItemTouchHelper.SimpleCallback itemTouchHelperCallback =
+//                new RecyclerItemTouchHelper(0, ItemTouchHelper.LEFT, this);
+//        new ItemTouchHelper(itemTouchHelperCallback).attachToRecyclerView(recyclerView);
     }
 
     @Override
@@ -142,7 +142,6 @@ public abstract class IssueListFragment extends Fragment
                 holder.itemView.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
-                        showToast("Position: " + holder.getAdapterPosition());
                         Intent intent = new Intent(getActivity(), IssueDetailActivity.class);
                         intent.putExtra("issue_key", issueKey);
                         startActivity(intent);

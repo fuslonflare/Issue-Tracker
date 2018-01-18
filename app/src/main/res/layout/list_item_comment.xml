@@ -2,7 +2,6 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:padding="10dp"
     android:orientation="vertical">
 
     <LinearLayout
@@ -11,21 +10,24 @@
         android:orientation="horizontal">
 
         <android.support.v7.widget.AppCompatTextView
+            android:id="@+id/text_note_create_by"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Phuwarin Janaporn"/>
+            android:text="Phuwarin Janaporn" />
 
         <android.support.v7.widget.AppCompatTextView
-            android:textAlignment="viewEnd"
+            android:id="@+id/text_note_create_time"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="4 January 2018 14:56:32"/>
+            android:text="4 January 2018 14:56:32"
+            android:textAlignment="viewEnd" />
 
     </LinearLayout>
 
     <android.support.v7.widget.AppCompatTextView
+        android:id="@+id/text_note_detail"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="เมื่อไรจะเสร็จ"/>
+        android:text="เมื่อไรจะเสร็จ" />
 
 </LinearLayout>

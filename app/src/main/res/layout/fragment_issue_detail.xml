@@ -1,7 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+    
+<LinearLayout
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    xmlns:tools="http://schemas.android.com/tools"
     android:orientation="vertical"
     android:padding="16dp">
 
@@ -30,14 +35,20 @@
         android:text="Assign To: Sukrit Seeta" />
 
     <android.support.v7.widget.AppCompatTextView
-        android:id="@+id/text_issue_description"
+        android:id="@+id/text_issue_detail"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Description: Fix Advance Report" />
+        android:text="Detail: Fix Advance Report" />
 
-    <ListView
+    <android.support.v7.widget.RecyclerView
+        android:layout_marginTop="16dp"
         android:id="@+id/list_comment"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"/>
+        android:layout_height="match_parent"
+        tools:listitem="@layout/list_item_comment"/>
 
 </LinearLayout>
+    
+
+
+</RelativeLayout>
