@@ -16,8 +16,9 @@ public class ContextBuilder {
     }
 
     public static ContextBuilder getInstance() {
-        if (instance == null)
+        if (instance == null) {
             instance = new ContextBuilder();
+        }
         return instance;
     }
 

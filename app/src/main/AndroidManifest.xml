@@ -2,6 +2,8 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="csd.gisc.issuetracker">
 
+    <uses-permission android:name="android.permission.INTERNET"/>
+
     <application
         android:name=".MainApplication"
         android:allowBackup="true"
@@ -10,9 +12,7 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity
-            android:name=".activity.LoginActivity"
-            android:label="@string/label_activity_login">
+        <activity android:name=".activity.LoginActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -22,6 +22,9 @@
         <activity
             android:name=".activity.IssueBoardActivity"
             android:label="@string/label_activity_issue_board" />
+        <activity
+            android:name=".activity.IssueDetailActivity"
+            android:label="@string/label_activity_issue_detail" />
     </application>
 
 </manifest>

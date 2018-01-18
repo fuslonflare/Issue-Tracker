@@ -5,9 +5,14 @@ buildscript {
     repositories {
         google()
         jcenter()
+        maven {
+            url 'https://maven.fabric.io/public'
+        }
     }
     dependencies {
         classpath 'com.android.tools.build:gradle:3.0.1'
+        classpath 'io.fabric.tools:gradle:1.24.4'
+        classpath 'com.google.gms:google-services:3.1.1'
         
 
         // NOTE: Do not place your application dependencies here; they belong
@@ -19,9 +24,20 @@ allprojects {
     repositories {
         google()
         jcenter()
+        maven {
+            url 'https://maven.google.com/'
+        }
     }
 }
 
 task clean(type: Delete) {
     delete rootProject.buildDir
+}
+
+ext {
+    supportLibraryVersion = '27.0.2'
+    constraintLibraryVersion = '1.0.2'
+    firebaseLibraryVersion = '11.8.0'
+    glideLibraryVersion = '4.5.0'
+    retrofit2LibraryVersion = '2.3.0'
 }

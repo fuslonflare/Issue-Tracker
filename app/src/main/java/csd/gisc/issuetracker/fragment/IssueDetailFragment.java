@@ -1,6 +1,5 @@
 package csd.gisc.issuetracker.fragment;
 
-import android.app.LauncherActivity;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
@@ -9,23 +8,22 @@ import android.view.ViewGroup;
 import android.widget.ListView;
 
 import csd.gisc.issuetracker.R;
-import csd.gisc.issuetracker.adapter.IssueListAdapter;
+import csd.gisc.issuetracker.adapter.IssueCommentAdapter;
 
 /**
  * Created by admin on 22/12/2560.
  */
 
-public class ListIssueFragment extends Fragment {
+public class IssueDetailFragment extends Fragment {
 
-    ListView listIssue;
-    IssueListAdapter adapter;
+    private ListView listComment;
 
-    public ListIssueFragment() {
+    public IssueDetailFragment() {
         super();
     }
 
-    public static ListIssueFragment newInstance() {
-        ListIssueFragment fragment = new ListIssueFragment();
+    public static IssueDetailFragment newInstance() {
+        IssueDetailFragment fragment = new IssueDetailFragment();
         Bundle args = new Bundle();
         fragment.setArguments(args);
         return fragment;
@@ -35,15 +33,16 @@ public class ListIssueFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater,
                              ViewGroup container,
                              Bundle savedInstanceState) {
-        View rootView = inflater.inflate(R.layout.fragment_list_issue, container, false);
+        View rootView = inflater.inflate(R.layout.fragment_issue_detail, container, false);
         initInstances(rootView);
         return rootView;
     }
 
     private void initInstances(View rootView) {
-        listIssue = rootView.findViewById(R.id.list_issue);
-        adapter = new IssueListAdapter();
-        listIssue.setAdapter(adapter);
+        IssueCommentAdapter adapter = new IssueCommentAdapter();
+
+        listComment = rootView.findViewById(R.id.list_comment);
+        listComment.setAdapter(adapter);
     }
 
     @Override

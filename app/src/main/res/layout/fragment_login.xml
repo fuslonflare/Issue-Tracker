@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:focusableInTouchMode="true"
@@ -7,13 +8,21 @@
     android:orientation="vertical"
     android:padding="10dp">
 
+    <android.support.v7.widget.AppCompatSpinner
+        android:id="@+id/spin_company"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:entries="@array/list_company_name"
+        android:prompt="@string/prompt_spinner_company"
+        android:spinnerMode="dropdown" />
+
     <android.support.design.widget.TextInputLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:textColorHint="@android:color/white">
 
-        <android.support.v7.widget.AppCompatEditText
-            android:id="@+id/edit_id"
+        <android.support.design.widget.TextInputEditText
+            android:id="@+id/edit_username"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:hint="@string/hint_id"
@@ -24,14 +33,15 @@
     <android.support.design.widget.TextInputLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:textColorHint="@android:color/white">
+        android:textColorHint="@android:color/white"
+        app:passwordToggleEnabled="true">
 
-        <android.support.v7.widget.AppCompatEditText
+        <android.support.design.widget.TextInputEditText
             android:id="@+id/edit_password"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:hint="@string/hint_password"
-            android:inputType="number"
+            android:inputType="textPassword"
             android:textColor="@android:color/white" />
     </android.support.design.widget.TextInputLayout>
 

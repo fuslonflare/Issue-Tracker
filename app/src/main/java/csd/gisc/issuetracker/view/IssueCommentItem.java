@@ -2,9 +2,9 @@ package csd.gisc.issuetracker.view;
 
 import android.annotation.TargetApi;
 import android.content.Context;
-import android.os.Build;
 import android.os.Bundle;
 import android.os.Parcelable;
+import android.support.v7.widget.AppCompatTextView;
 import android.util.AttributeSet;
 
 import csd.gisc.issuetracker.R;
@@ -14,30 +14,30 @@ import csd.gisc.issuetracker.view.state.BundleSavedState;
  * Created by admin on 28/12/2560.
  */
 
-public class IssueListItem extends BaseCustomViewGroup{
+public class IssueCommentItem extends BaseCustomViewGroup{
 
-    public IssueListItem(Context context) {
+    public IssueCommentItem(Context context) {
         super(context);
         initInflate();
         initInstances();
     }
 
-    public IssueListItem(Context context, AttributeSet attrs) {
+    public IssueCommentItem(Context context, AttributeSet attrs) {
         super(context, attrs);
         initInflate();
         initInstances();
         initWithAttrs(attrs, 0, 0);
     }
 
-    public IssueListItem(Context context, AttributeSet attrs, int defStyleAttr) {
+    public IssueCommentItem(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
         initInflate();
         initInstances();
         initWithAttrs(attrs, defStyleAttr, 0);
     }
 
-    @TargetApi(Build.VERSION_CODES.LOLLIPOP)
-    public IssueListItem(Context context, AttributeSet attrs, int defStyleAttr, int defStyleRes) {
+    @TargetApi(21)
+    public IssueCommentItem(Context context, AttributeSet attrs, int defStyleAttr, int defStyleRes) {
         super(context, attrs, defStyleAttr, defStyleRes);
         initInflate();
         initInstances();
@@ -45,7 +45,7 @@ public class IssueListItem extends BaseCustomViewGroup{
     }
 
     private void initInflate() {
-        inflate(getContext(), R.layout.list_item_issue, this);
+        inflate(getContext(), R.layout.list_item_comment, this);
     }
 
     private void initInstances() {
