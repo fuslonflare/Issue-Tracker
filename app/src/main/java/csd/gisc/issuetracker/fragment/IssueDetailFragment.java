@@ -5,6 +5,7 @@ import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.design.widget.TextInputEditText;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.AppCompatButton;
 import android.support.v7.widget.AppCompatEditText;
@@ -42,7 +43,7 @@ import csd.gisc.issuetracker.model.Note;
 import csd.gisc.issuetracker.view.holder.NoteViewHolder;
 
 /**
- * Created by admin on 22/12/2560.
+ * Created by admin on 22/12/2560
  */
 
 public class IssueDetailFragment extends Fragment implements View.OnClickListener {
@@ -58,7 +59,7 @@ public class IssueDetailFragment extends Fragment implements View.OnClickListene
     private AppCompatTextView textAssignTo;
     private AppCompatTextView textDetail;
     private AppCompatTextView textStatus;
-    private AppCompatEditText editMessage;
+    private TextInputEditText editMessage;
     private AppCompatButton buttonSend;
 
     private DatabaseReference mIssueRef;
@@ -117,7 +118,6 @@ public class IssueDetailFragment extends Fragment implements View.OnClickListene
         fieldStatus = rootView.findViewById(R.id.linear_field_status);
 
         buttonSend.setOnClickListener(this);
-        fieldStatus.setOnClickListener(this);
 
         listComment = rootView.findViewById(R.id.list_comment);
         linearLayoutManager = new LinearLayoutManager(getContext());
@@ -143,7 +143,7 @@ public class IssueDetailFragment extends Fragment implements View.OnClickListene
                             resIconStatus = R.drawable.ic_new_releases;
                             break;
                         case InProgress:
-                            resIconStatus = R.drawable.ic_rowing;
+                            resIconStatus = R.drawable.ic_directions_bike;
                             break;
                         case Closed:
                             resIconStatus = R.drawable.ic_check_circle;
@@ -186,18 +186,18 @@ public class IssueDetailFragment extends Fragment implements View.OnClickListene
         mAdapter.stopListening();
     }
 
-    /*
+    /**
      * Save Instance State Here
-     */
+     * */
     @Override
     public void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
         // Save Instance State here
     }
 
-    /*
+    /**
      * Restore Instance State Here
-     */
+     * */
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
@@ -265,9 +265,6 @@ public class IssueDetailFragment extends Fragment implements View.OnClickListene
                 }
             });
         }
-        if (id == R.id.linear_field_status) {
-            changeStatus();
-        }
     }
 
     private void hideKeyboard(Activity activity) {
@@ -278,23 +275,5 @@ public class IssueDetailFragment extends Fragment implements View.OnClickListene
                 imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
             }
         }
-    }
-
-    public void changeStatus() {
-        Status newStatus = status;
-        switch (status) {
-            case New:
-                newStatus = Status.InProgress;
-                break;
-            case InProgress:
-                newStatus = Status.Closed;
-                break;
-            case Closed:
-                newStatus = Status.InProgress;
-                break;
-            default:
-                break;
-        }
-        mIssueRef.child("status").setValue(newStatus.name());
     }
 }

@@ -2,6 +2,7 @@ package csd.gisc.issuetracker.fragment;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.design.widget.TextInputEditText;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.AppCompatButton;
@@ -14,7 +15,7 @@ import csd.gisc.issuetracker.R;
 import csd.gisc.issuetracker.activity.IssueBoardActivity;
 
 /**
- * Created by admin on 22/12/2560.
+ * Created by admin on 22/12/2560
  */
 
 public class LoginFragment extends Fragment implements View.OnClickListener {
@@ -40,7 +41,7 @@ public class LoginFragment extends Fragment implements View.OnClickListener {
     }
 
     @Override
-    public View onCreateView(LayoutInflater inflater,
+    public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container,
                              Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.fragment_login, container, false);
@@ -74,7 +75,7 @@ public class LoginFragment extends Fragment implements View.OnClickListener {
      * Save Instance State Here
      */
     @Override
-    public void onSaveInstanceState(Bundle outState) {
+    public void onSaveInstanceState(@NonNull Bundle outState) {
         super.onSaveInstanceState(outState);
         // Save Instance State here
     }

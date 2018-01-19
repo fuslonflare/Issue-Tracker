@@ -12,9 +12,10 @@
         android:paddingEnd="16dp"
         android:paddingStart="16dp">
 
-        <TextView
+        <android.support.v7.widget.AppCompatTextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:id="@+id/text_new_status"
             android:text="Delete" />
 
     </LinearLayout>

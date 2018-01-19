@@ -2,6 +2,8 @@ package csd.gisc.issuetracker;
 
 import android.app.Application;
 
+import com.google.firebase.database.FirebaseDatabase;
+
 import csd.gisc.issuetracker.manager.ContextBuilder;
 
 /**
@@ -13,5 +15,6 @@ public class MainApplication extends Application {
     public void onCreate() {
         super.onCreate();
         ContextBuilder.getInstance().init(getApplicationContext());
+        FirebaseDatabase.getInstance().setPersistenceEnabled(true);
     }
 }

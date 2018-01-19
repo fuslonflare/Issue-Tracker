@@ -1,17 +1,18 @@
-package csd.gisc.issuetracker.view;
+package csd.gisc.issuetracker.listener;
 
 import android.graphics.Canvas;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.helper.ItemTouchHelper;
 import android.view.View;
 
-import csd.gisc.issuetracker.adapter.IssueListAdapter;
+import csd.gisc.issuetracker.view.holder.IssueViewHolder;
 
 /**
  * Created by admin on 3/1/2561.
  */
 
 public class RecyclerItemTouchHelper extends ItemTouchHelper.SimpleCallback {
+
     private RecyclerItemTouchHelperListener listener;
 
     public RecyclerItemTouchHelper(int dragDirs,
@@ -38,7 +39,7 @@ public class RecyclerItemTouchHelper extends ItemTouchHelper.SimpleCallback {
     public void onSelectedChanged(RecyclerView.ViewHolder viewHolder,
                                   int actionState) {
         if (viewHolder != null) {
-            final View foregroundView = ((IssueListAdapter.IssueHolder) viewHolder).viewForeground;
+            View foregroundView = ((IssueViewHolder) viewHolder).viewForeground;
 
             getDefaultUIUtil().onSelected(foregroundView);
         }
@@ -52,7 +53,7 @@ public class RecyclerItemTouchHelper extends ItemTouchHelper.SimpleCallback {
                                 float dY,
                                 int actionState,
                                 boolean isCurrentlyActive) {
-        final View foregroundView = ((IssueListAdapter.IssueHolder) viewHolder).viewForeground;
+        View foregroundView = ((IssueViewHolder) viewHolder).viewForeground;
         getDefaultUIUtil().onDrawOver(c, recyclerView, foregroundView, dX, dY,
                 actionState, isCurrentlyActive);
     }
@@ -65,15 +66,14 @@ public class RecyclerItemTouchHelper extends ItemTouchHelper.SimpleCallback {
                             float dY,
                             int actionState,
                             boolean isCurrentlyActive) {
-        final View foregroundView = ((IssueListAdapter.IssueHolder) viewHolder).viewForeground;
-
+        View foregroundView = ((IssueViewHolder) viewHolder).viewForeground;
         getDefaultUIUtil().onDraw(c, recyclerView, foregroundView, dX, dY,
                 actionState, isCurrentlyActive);
     }
 
     @Override
     public void clearView(RecyclerView recyclerView, RecyclerView.ViewHolder viewHolder) {
-        final View foregroundView = ((IssueListAdapter.IssueHolder) viewHolder).viewForeground;
+        View foregroundView = ((IssueViewHolder) viewHolder).viewForeground;
         getDefaultUIUtil().clearView(foregroundView);
     }
 

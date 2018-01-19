@@ -11,7 +11,6 @@ import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.helper.ItemTouchHelper;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -28,24 +27,20 @@ import java.util.List;
 
 import csd.gisc.issuetracker.R;
 import csd.gisc.issuetracker.activity.IssueDetailActivity;
-import csd.gisc.issuetracker.adapter.IssueListAdapter;
+import csd.gisc.issuetracker.listener.RecyclerItemTouchHelper;
 import csd.gisc.issuetracker.model.Issue;
-import csd.gisc.issuetracker.enums.Status;
-import csd.gisc.issuetracker.view.RecyclerItemTouchHelper;
-import csd.gisc.issuetracker.view.RecyclerViewClickListener;
 import csd.gisc.issuetracker.view.holder.IssueViewHolder;
 
 /**
- * Created by admin on 22/12/2560.
+ * Created by admin on 22/12/2560
  */
 
 public abstract class IssueListFragment extends Fragment
-        implements RecyclerItemTouchHelper.RecyclerItemTouchHelperListener, RecyclerViewClickListener {
+        implements RecyclerItemTouchHelper.RecyclerItemTouchHelperListener {
 
     private static final String TAG = IssueListFragment.class.getSimpleName() + "TAG";
 
     private RecyclerView recyclerView;
-    private RecyclerViewClickListener recyclerViewClickListener;
     private List<Issue> issueList;
 
     private Query query;
@@ -69,7 +64,6 @@ public abstract class IssueListFragment extends Fragment
     private void initInstances() {
         context = getContext();
         issueList = new ArrayList<>();
-        recyclerViewClickListener = this;
 
         mDatabase = FirebaseDatabase.getInstance().getReference();
     }
@@ -87,12 +81,12 @@ public abstract class IssueListFragment extends Fragment
         recyclerView = rootView.findViewById(R.id.list_issue);
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
         recyclerView.setItemAnimator(new DefaultItemAnimator());
-//        recyclerView.addItemDecoration(
-//                new DividerItemDecoration(context, DividerItemDecoration.VERTICAL));
-//
-//        ItemTouchHelper.SimpleCallback itemTouchHelperCallback =
-//                new RecyclerItemTouchHelper(0, ItemTouchHelper.LEFT, this);
-//        new ItemTouchHelper(itemTouchHelperCallback).attachToRecyclerView(recyclerView);
+        recyclerView.addItemDecoration(
+                new DividerItemDecoration(context, DividerItemDecoration.VERTICAL));
+
+        ItemTouchHelper.SimpleCallback itemTouchHelperCallback =
+                new RecyclerItemTouchHelper(0, ItemTouchHelper.LEFT, this);
+        new ItemTouchHelper(itemTouchHelperCallback).attachToRecyclerView(recyclerView);
     }
 
     @Override
@@ -148,7 +142,7 @@ public abstract class IssueListFragment extends Fragment
                     }
                 });
 
-                holder.bindToIssue(issue);
+                holder.bindToIssue(issue, issueKey);
             }
 
             @Override
@@ -168,17 +162,9 @@ public abstract class IssueListFragment extends Fragment
     public void onSwiped(RecyclerView.ViewHolder viewHolder,
                          int direction,
                          int position) {
-        if (viewHolder instanceof IssueListAdapter.IssueHolder) {
-            //adapter.removeItem(viewHolder.getAdapterPosition());
+        if (viewHolder instanceof IssueViewHolder) {
+            ((IssueViewHolder) viewHolder).changeStatus(query.getRef());
         }
-    }
-
-    @Override
-    public void recyclerViewListClicked(View v,
-                                        int position) {
-        showToast("Position: " + position);
-        Intent intent = new Intent(getContext(), IssueDetailActivity.class);
-        startActivity(intent);
     }
 
     private void showToast(CharSequence message) {

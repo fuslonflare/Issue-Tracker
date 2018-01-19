@@ -8,7 +8,7 @@ import com.google.firebase.database.Query;
 import csd.gisc.issuetracker.enums.Status;
 
 /**
- * Created by admin on 22/12/2560.
+ * Created by admin on 22/12/2560
  */
 
 public class ClosedIssueFragment extends IssueListFragment {
