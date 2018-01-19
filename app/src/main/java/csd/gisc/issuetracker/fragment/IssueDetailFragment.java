@@ -1,5 +1,7 @@
 package csd.gisc.issuetracker.fragment;
 
+import android.app.Activity;
+import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -15,7 +17,9 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
@@ -32,6 +36,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import csd.gisc.issuetracker.R;
+import csd.gisc.issuetracker.enums.Status;
 import csd.gisc.issuetracker.model.Issue;
 import csd.gisc.issuetracker.model.Note;
 import csd.gisc.issuetracker.view.holder.NoteViewHolder;
@@ -46,11 +51,13 @@ public class IssueDetailFragment extends Fragment implements View.OnClickListene
 
     private RecyclerView listComment;
     private LinearLayoutManager linearLayoutManager;
+    private LinearLayout fieldStatus;
     private ImageView imageStatus;
     private AppCompatTextView textIssueId;
     private AppCompatTextView textProductName;
     private AppCompatTextView textAssignTo;
     private AppCompatTextView textDetail;
+    private AppCompatTextView textStatus;
     private AppCompatEditText editMessage;
     private AppCompatButton buttonSend;
 
@@ -63,6 +70,7 @@ public class IssueDetailFragment extends Fragment implements View.OnClickListene
     private ValueEventListener valueEventListener;
 
     private String issueKey;
+    private Status status;
 
     public IssueDetailFragment() {
         super();
@@ -102,10 +110,14 @@ public class IssueDetailFragment extends Fragment implements View.OnClickListene
         textProductName = rootView.findViewById(R.id.text_issue_product_name);
         textAssignTo = rootView.findViewById(R.id.text_issue_assign_to);
         textDetail = rootView.findViewById(R.id.text_issue_detail);
+        textStatus = rootView.findViewById(R.id.text_issue_status);
         imageStatus = rootView.findViewById(R.id.image_status);
         editMessage = rootView.findViewById(R.id.edit_note_message);
         buttonSend = rootView.findViewById(R.id.button_send);
+        fieldStatus = rootView.findViewById(R.id.linear_field_status);
+
         buttonSend.setOnClickListener(this);
+        fieldStatus.setOnClickListener(this);
 
         listComment = rootView.findViewById(R.id.list_comment);
         linearLayoutManager = new LinearLayoutManager(getContext());
@@ -126,7 +138,7 @@ public class IssueDetailFragment extends Fragment implements View.OnClickListene
                 Issue issue = dataSnapshot.getValue(Issue.class);
                 int resIconStatus = 0;
                 if (issue != null) {
-                    switch (issue.getStatus()) {
+                    switch (status = issue.getStatus()) {
                         case New:
                             resIconStatus = R.drawable.ic_new_releases;
                             break;
@@ -148,6 +160,7 @@ public class IssueDetailFragment extends Fragment implements View.OnClickListene
                     textProductName.setText(issue.getProductName());
                     textAssignTo.setText(issue.getAssignTo());
                     textDetail.setText(issue.getDetail());
+                    textStatus.setText(issue.getStatus().name());
                 }
             }
 
@@ -225,8 +238,9 @@ public class IssueDetailFragment extends Fragment implements View.OnClickListene
 
     @Override
     public void onClick(View view) {
-        if (view.getId() == R.id.button_send) {
-            String keyNote = mCommentsRef.push().getKey();
+        int id = view.getId();
+        if (id == R.id.button_send) {
+            String noteKey = mCommentsRef.push().getKey();
             String message = editMessage.getText().toString();
             String name = "Thidakarn Rujipattanakul";
             long currentEpoch = System.currentTimeMillis() / 1000;
@@ -234,9 +248,53 @@ public class IssueDetailFragment extends Fragment implements View.OnClickListene
             Note note = new Note(name, currentEpoch, message);
 
             Map<String, Object> postNote = new HashMap<>();
-            postNote.put(keyNote, note);
+            postNote.put(noteKey, note);
 
-            mCommentsRef.updateChildren(postNote);
+            mCommentsRef.updateChildren(postNote, new DatabaseReference.CompletionListener() {
+                @Override
+                public void onComplete(DatabaseError databaseError,
+                                       DatabaseReference databaseReference) {
+                    if (databaseError == null) {
+                        editMessage.setText("");
+                        editMessage.clearFocus();
+                        hideKeyboard(getActivity());
+                    } else {
+                        Log.e(TAG, "Can't update children on " + databaseReference,
+                                databaseError.toException());
+                    }
+                }
+            });
         }
+        if (id == R.id.linear_field_status) {
+            changeStatus();
+        }
+    }
+
+    private void hideKeyboard(Activity activity) {
+        View view = activity.getCurrentFocus();
+        if (view != null) {
+            InputMethodManager imm = (InputMethodManager) activity.getSystemService(Context.INPUT_METHOD_SERVICE);
+            if (imm != null) {
+                imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
+            }
+        }
+    }
+
+    public void changeStatus() {
+        Status newStatus = status;
+        switch (status) {
+            case New:
+                newStatus = Status.InProgress;
+                break;
+            case InProgress:
+                newStatus = Status.Closed;
+                break;
+            case Closed:
+                newStatus = Status.InProgress;
+                break;
+            default:
+                break;
+        }
+        mIssueRef.child("status").setValue(newStatus.name());
     }
 }
