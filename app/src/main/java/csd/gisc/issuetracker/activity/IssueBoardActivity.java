@@ -94,9 +94,9 @@ public class IssueBoardActivity extends AppCompatActivity {
         });
 
         tabLayout.setupWithViewPager(pagerIssueBoard);
-        tabLayout.getTabAt(0).setIcon(R.drawable.ic_new_releases);
-        tabLayout.getTabAt(1).setIcon(R.drawable.ic_directions_bike);
-        tabLayout.getTabAt(2).setIcon(R.drawable.ic_check_circle);
+        tabLayout.getTabAt(0).setIcon(R.drawable.ic_announcement);
+        tabLayout.getTabAt(1).setIcon(R.drawable.ic_track_changes);
+        tabLayout.getTabAt(2).setIcon(R.drawable.ic_assignment_turned_in);
     }
 
     @Override

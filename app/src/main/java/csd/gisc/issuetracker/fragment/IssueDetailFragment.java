@@ -140,13 +140,13 @@ public class IssueDetailFragment extends Fragment implements View.OnClickListene
                 if (issue != null) {
                     switch (status = issue.getStatus()) {
                         case New:
-                            resIconStatus = R.drawable.ic_new_releases;
+                            resIconStatus = R.drawable.ic_announcement;
                             break;
                         case InProgress:
-                            resIconStatus = R.drawable.ic_directions_bike;
+                            resIconStatus = R.drawable.ic_track_changes;
                             break;
                         case Closed:
-                            resIconStatus = R.drawable.ic_check_circle;
+                            resIconStatus = R.drawable.ic_assignment_turned_in;
                             break;
                         default:
                             break;
