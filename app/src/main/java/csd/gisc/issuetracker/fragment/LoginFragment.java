@@ -1,11 +1,15 @@
 package csd.gisc.issuetracker.fragment;
 
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.design.widget.Snackbar;
 import android.support.design.widget.TextInputEditText;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.AppCompatButton;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -13,6 +17,13 @@ import android.widget.Spinner;
 
 import csd.gisc.issuetracker.R;
 import csd.gisc.issuetracker.activity.IssueBoardActivity;
+import csd.gisc.issuetracker.manager.HttpManager;
+import csd.gisc.issuetracker.model.RequestLogin;
+import csd.gisc.issuetracker.model.ResponseLogin;
+import csd.gisc.issuetracker.model.ResultLogin;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 /**
  * Created by admin on 22/12/2560
@@ -95,70 +106,79 @@ public class LoginFragment extends Fragment implements View.OnClickListener {
     public void onClick(View view) {
         int id = view.getId();
         if (id == R.id.button_login) {
-//            if (checkAllFieldEmpty()) {
-//                Log.d(TAG, "Field empty");
-//                return;
-//            }
+            if (checkAllFieldEmpty()) {
+                Log.d(TAG, "Field empty");
+                showSnackbar("Field couldn't empty");
+                return;
+            }
 
-            Intent intent = new Intent(getActivity(), IssueBoardActivity.class);
-//            int groupId = 0;
-//            switch (spinCompany.getSelectedItemPosition()) {
-//                case 0:
-//                    groupId = 1;
-//                    break;
-//                case 1:
-//                    groupId = 2;
-//                    break;
-//                case 2:
-//                    groupId = 4;
-//                    break;
-//                default:
-//                    break;
-//            }
-//
-//            CredentialDao loginRequest = new CredentialDao(
-//                    editUsername.getEditableText().toString(),
-//                    editPassword.getEditableText().toString(),
-//                    groupId
-//            );
-//            HttpManager.getInstance().getService()
-//                    .login(loginRequest)
-//                    .enqueue(new Callback<ResponseDao<ResultCredentialDao>>() {
-//                        @Override
-//                        public void onResponse(@NonNull Call<ResponseDao<ResultCredentialDao>> call,
-//                                               @NonNull Response<ResponseDao<ResultCredentialDao>> response) {
-//                            if (response.isSuccessful()) {
-//                                if (response.body().getErrorCode().equals("Success")) {
-//                                    Log.d(TAG, "Login success");
-//                                    SharedPreferences sharedPref = getContext().getSharedPreferences(
-//                                            getString(R.string.preference_file_key), Context.MODE_PRIVATE);
-//                                    SharedPreferences.Editor editor = sharedPref.edit();
-//                                    String userToken = response.body().getResult().get(0).getTokenUser();
-//                                    editor.putString("token_user", userToken);
-//                                    intent.putExtra("token_user", userToken);
-                                    startActivity(intent);
-//                                    getActivity().finish();
-//                                } else {
-//                                    Log.d(TAG, "Login fail");
-//                                }
-//                            } else {
-//                                Log.d(TAG, response.code() + " : " + response.message());
-//                            }
-//                        }
-//
-//                        @Override
-//                        public void onFailure(@NonNull Call<ResponseDao<ResultCredentialDao>> call,
-//                                              @NonNull Throwable t) {
-//                            Log.e(TAG, t.toString());
-//                        }
-//                    });
-//        }
-//        if (id == R.id.button_reset) {
-//            resetField();
+            final Intent intent = new Intent(getActivity(), IssueBoardActivity.class);
+            int groupId = getGroupId(spinCompany.getSelectedItemPosition());
+
+            RequestLogin loginRequest = new RequestLogin(
+                    editUsername.getEditableText().toString(),
+                    editPassword.getEditableText().toString(),
+                    groupId);
+
+            HttpManager.getInstance().getService()
+                    .login(loginRequest)
+                    .enqueue(new Callback<ResponseLogin<ResultLogin>>() {
+                        @Override
+                        public void onResponse(Call<ResponseLogin<ResultLogin>> call,
+                                               Response<ResponseLogin<ResultLogin>> response) {
+                            if (response.isSuccessful()) {
+                                ResponseLogin<ResultLogin> body = response.body();
+                                if (body != null) {
+                                    if (body.getErrorMsg().length() == 0) {
+                                        String tokenUser = body.getResult().get(0).getTokenUser();
+                                        // Login success
+                                        intent.putExtra("token_user", tokenUser);
+                                        startActivity(intent);
+                                        if (getActivity() != null) {
+                                            getActivity().finish();
+                                        }
+                                    } else {
+                                        Log.e(TAG, "Error from server : " + body.getErrorMsg());
+                                        showSnackbar("Login failed, please check your credential.");
+                                    }
+                                }
+                            } else {
+                                Log.e(TAG, "onResponse but not successful : " + response.message());
+                                showSnackbar("Error " + response.code() + " " + response.message() +
+                                        ",\nPlease check your credential.");
+                            }
+                        }
+
+                        @Override
+                        public void onFailure(Call<ResponseLogin<ResultLogin>> call,
+                                              Throwable t) {
+                            Log.e(TAG, "onFailure : " + t.toString(), t);
+                            showSnackbar("Connect server error, please check your connection.");
+                        }
+                    });
         }
+
         if (id == R.id.button_reset) {
             resetField();
         }
+    }
+
+    private int getGroupId(int selectedItemPosition) {
+        int groupId = 0;
+        switch (selectedItemPosition) {
+            case 0:
+                groupId = 1;
+                break;
+            case 1:
+                groupId = 2;
+                break;
+            case 2:
+                groupId = 4;
+                break;
+            default:
+                break;
+        }
+        return groupId;
     }
 
     private boolean checkAllFieldEmpty() {
@@ -170,5 +190,13 @@ public class LoginFragment extends Fragment implements View.OnClickListener {
         editUsername.setText("");
         editPassword.setText("");
         spinCompany.setSelection(0);
+    }
+
+    private void showSnackbar(CharSequence message) {
+        Snackbar.make(buttonLogin, message, Snackbar.LENGTH_SHORT).show();
+    }
+
+    private void showSnackbar(int stringResourceId) {
+        Snackbar.make(buttonLogin, stringResourceId, Snackbar.LENGTH_SHORT).show();
     }
 }

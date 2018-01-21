@@ -1,8 +1,8 @@
 package csd.gisc.issuetracker.manager.http;
 
-import csd.gisc.issuetracker.model.CredentialDao;
-import csd.gisc.issuetracker.model.ResponseDao;
-import csd.gisc.issuetracker.model.ResultCredentialDao;
+import csd.gisc.issuetracker.model.RequestLogin;
+import csd.gisc.issuetracker.model.ResponseLogin;
+import csd.gisc.issuetracker.model.ResultLogin;
 import retrofit2.Call;
 import retrofit2.http.Body;
 import retrofit2.http.Headers;
@@ -15,5 +15,5 @@ import retrofit2.http.POST;
 public interface ApiService {
     @Headers("Content-Type: application/json")
     @POST("rest/auth/loginGroup")
-    Call<ResponseDao<ResultCredentialDao>> login(@Body CredentialDao loginRequest);
+    Call<ResponseLogin<ResultLogin>> login(@Body RequestLogin loginRequest);
 }

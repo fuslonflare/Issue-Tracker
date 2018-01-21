@@ -6,7 +6,7 @@ import com.google.gson.annotations.SerializedName;
  * Created by admin on 16/1/2561.
  */
 
-public class ResultUserInfoDao {
+public class ResultUserInfo {
     @SerializedName("cell_phone")
     private String cellPhone;
     @SerializedName("company")
