@@ -2,10 +2,8 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/Issue Tracker.iml" filepath="$PROJECT_DIR$/Issue Tracker.iml" />
-      <module fileurl="file://D:\Users\Phuwarin\AndroidStudioProjects\Issue Tracker\IssueTracker.iml" filepath="D:\Users\Phuwarin\AndroidStudioProjects\Issue Tracker\IssueTracker.iml" />
+      <module fileurl="file://$PROJECT_DIR$/IssueTracker.iml" filepath="$PROJECT_DIR$/IssueTracker.iml" />
       <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" />
-      <module fileurl="file://D:\Users\Phuwarin\AndroidStudioProjects\Issue Tracker\app\app.iml" filepath="D:\Users\Phuwarin\AndroidStudioProjects\Issue Tracker\app\app.iml" />
     </modules>
   </component>
 </project>
