@@ -2,6 +2,7 @@ package csd.gisc.issuetracker.fragment;
 
 import android.app.Activity;
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -242,7 +243,7 @@ public class IssueDetailFragment extends Fragment implements View.OnClickListene
         if (id == R.id.button_send) {
             String noteKey = mCommentsRef.push().getKey();
             String message = editMessage.getText().toString();
-            String name = "Thidakarn Rujipattanakul";
+            String name = getUserName();
             long currentEpoch = System.currentTimeMillis() / 1000;
 
             Note note = new Note(name, currentEpoch, message);
@@ -265,6 +266,16 @@ public class IssueDetailFragment extends Fragment implements View.OnClickListene
                 }
             });
         }
+    }
+
+    private String getUserName() {
+        String name = "";
+        if (getActivity() != null) {
+            SharedPreferences sharedPreferences = getActivity().getSharedPreferences
+                    ("preference_user_data", Context.MODE_PRIVATE);
+            name = sharedPreferences.getString("name", "Somebody");
+        }
+        return name;
     }
 
     private void hideKeyboard(Activity activity) {

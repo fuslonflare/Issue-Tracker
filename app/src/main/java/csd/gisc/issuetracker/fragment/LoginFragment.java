@@ -1,6 +1,8 @@
 package csd.gisc.issuetracker.fragment;
 
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.Snackbar;
@@ -129,8 +131,8 @@ public class LoginFragment extends Fragment implements View.OnClickListener {
                                 Response<ResultLogin> body = response.body();
                                 if (body != null) {
                                     if (body.getErrorMsg().length() == 0) {
-                                        // Login success
 
+                                        // Login success
                                         String tokenUser = body.getResult().get(0).getTokenUser();
                                         String employeeId = body.getResult().get(0).getEmployeeId();
                                         String groupId = body.getResult().get(0).getGroupId();

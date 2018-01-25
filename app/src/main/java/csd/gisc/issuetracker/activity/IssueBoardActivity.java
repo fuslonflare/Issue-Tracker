@@ -1,8 +1,10 @@
 package csd.gisc.issuetracker.activity;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.res.Configuration;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -11,6 +13,7 @@ import android.support.design.widget.Snackbar;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentStatePagerAdapter;
+import android.support.v4.util.ArraySet;
 import android.support.v4.view.ViewPager;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
@@ -24,6 +27,8 @@ import android.widget.ImageView;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
+
+import java.util.Set;
 
 import csd.gisc.issuetracker.R;
 import csd.gisc.issuetracker.fragment.ClosedIssueFragment;
@@ -40,6 +45,9 @@ public class IssueBoardActivity extends AppCompatActivity {
     private static final int SIZE_PAGE = 3;
     private static final String TAG = IssueBoardActivity.class.getSimpleName();
 
+    private SharedPreferences preferences;
+    private SharedPreferences.Editor editor;
+
     private ViewPager pagerIssueBoard;
     private TabLayout tabLayout;
 
@@ -53,12 +61,13 @@ public class IssueBoardActivity extends AppCompatActivity {
     private AppCompatTextView textUnitCode;
 
     private Bundle requiredParameters;
+    private Bundle userInfo;
     private String tokenUser;
     private String employeeId;
     private String groupId;
     private String name;
     private String unitCode;
-    private Uri profileImageUrl;
+    private Uri profilePicture;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -88,10 +97,12 @@ public class IssueBoardActivity extends AppCompatActivity {
                                     // Get employee success
 
                                     name = body.getResult().get(0).getEngName();
+                                    name = improveName(name);
                                     unitCode = body.getResult().get(0).getUnitCode();
-                                    profileImageUrl = Uri.parse(body.getResult().get(0).getProfileImage());
+                                    profilePicture = Uri.parse(body.getResult().get(0).getProfileImage());
 
-                                    setProfile(name, unitCode, profileImageUrl);
+                                    storeUserData(name, unitCode, profilePicture);
+                                    setProfile(name, unitCode, profilePicture);
                                 }
                             }
                         }
@@ -104,21 +115,37 @@ public class IssueBoardActivity extends AppCompatActivity {
                         }
                     });
         } else {
-            Log.d(TAG, String.format("Some requiredParameters is null or empty : " +
+            setProfile(name, unitCode, profilePicture);
+
+            /*Log.d(TAG, String.format("Some requiredParameters is null or empty : " +
                     "tokenUser : %1$s, " +
                     "employeeId : %2$s, " +
-                    "groupId : %3$s", tokenUser, employeeId, groupId));
+                    "groupId : %3$s", tokenUser, employeeId, groupId));*/
         }
+    }
+
+    private void storeUserData(String name,
+                               String unitCode,
+                               Uri profilePicture) {
+        editor = preferences.edit();
+
+        editor.putString("name", name);
+        editor.putString("unit_code", unitCode);
+        editor.putString("profile_picture", profilePicture.toString());
+        editor.putString("employee_id", employeeId);
+
+        editor.apply();
     }
 
     private void setProfile(String name,
                             String unitCode,
-                            Uri profileImageUrl) {
+                            Uri profilePicture) {
+        String nameWithEmpId = employeeId + " - " + name;
         Glide.with(this)
-                .load(profileImageUrl)
+                .load(profilePicture)
                 .apply(new RequestOptions().circleCrop())
                 .into(imageProfile);
-        textName.setText(improveName(name));
+        textName.setText(nameWithEmpId);
         textUnitCode.setText(unitCode);
     }
 
@@ -133,7 +160,7 @@ public class IssueBoardActivity extends AppCompatActivity {
             newFullName.append(aName).append(" ");
         }
 
-        return employeeId + " - " + newFullName.toString();
+        return newFullName.toString();
     }
 
     private boolean isNullOrEmpty(String text) {
@@ -141,10 +168,22 @@ public class IssueBoardActivity extends AppCompatActivity {
     }
 
     private void initInstances() {
+        preferences = getSharedPreferences("preference_user_data", MODE_PRIVATE);
+
         requiredParameters = getIntent().getBundleExtra("required_parameters");
-        tokenUser = requiredParameters.getString("token_user");
-        employeeId = requiredParameters.getString("employee_id");
-        groupId = requiredParameters.getString("group_id");
+        if (requiredParameters != null) {
+            tokenUser = requiredParameters.getString("token_user");
+            employeeId = requiredParameters.getString("employee_id");
+            groupId = requiredParameters.getString("group_id");
+        }
+
+        userInfo = getIntent().getBundleExtra("user_info");
+        if (userInfo != null) {
+            name = userInfo.getString("user_name");
+            unitCode = userInfo.getString("user_unit_code");
+            profilePicture = Uri.parse(userInfo.getString("user_profile_picture"));
+            employeeId = userInfo.getString("employee_id");
+        }
     }
 
     private void initUi() {
@@ -174,6 +213,14 @@ public class IssueBoardActivity extends AppCompatActivity {
             public boolean onNavigationItemSelected(@NonNull MenuItem item) {
                 int id = item.getItemId();
                 if (id == R.id.log_out) {
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+                        deleteSharedPreferences("preference_user_data");
+                    } else {
+                        editor = preferences.edit();
+                        editor.clear();
+                        editor.apply();
+                    }
+
                     Intent intent = new Intent(IssueBoardActivity.this, LoginActivity.class);
                     startActivity(intent);
                     finish();
