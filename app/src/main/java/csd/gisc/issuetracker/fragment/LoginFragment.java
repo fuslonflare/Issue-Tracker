@@ -1,8 +1,6 @@
 package csd.gisc.issuetracker.fragment;
 
-import android.content.Context;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.Snackbar;
@@ -19,11 +17,10 @@ import csd.gisc.issuetracker.R;
 import csd.gisc.issuetracker.activity.IssueBoardActivity;
 import csd.gisc.issuetracker.manager.HttpManager;
 import csd.gisc.issuetracker.model.RequestLogin;
-import csd.gisc.issuetracker.model.ResponseLogin;
+import csd.gisc.issuetracker.model.Response;
 import csd.gisc.issuetracker.model.ResultLogin;
 import retrofit2.Call;
 import retrofit2.Callback;
-import retrofit2.Response;
 
 /**
  * Created by admin on 22/12/2560
@@ -122,25 +119,36 @@ public class LoginFragment extends Fragment implements View.OnClickListener {
 
             HttpManager.getInstance().getService()
                     .login(loginRequest)
-                    .enqueue(new Callback<ResponseLogin<ResultLogin>>() {
+                    .enqueue(new Callback<Response<ResultLogin>>() {
+
+
                         @Override
-                        public void onResponse(Call<ResponseLogin<ResultLogin>> call,
-                                               Response<ResponseLogin<ResultLogin>> response) {
+                        public void onResponse(Call<Response<ResultLogin>> call,
+                                               retrofit2.Response<Response<ResultLogin>> response) {
                             if (response.isSuccessful()) {
-                                ResponseLogin<ResultLogin> body = response.body();
+                                Response<ResultLogin> body = response.body();
                                 if (body != null) {
                                     if (body.getErrorMsg().length() == 0) {
-                                        String tokenUser = body.getResult().get(0).getTokenUser();
                                         // Login success
-                                        intent.putExtra("token_user", tokenUser);
+
+                                        String tokenUser = body.getResult().get(0).getTokenUser();
+                                        String employeeId = body.getResult().get(0).getEmployeeId();
+                                        String groupId = body.getResult().get(0).getGroupId();
+
+                                        Bundle bundle = packBundle(tokenUser, employeeId, groupId);
+
+                                        intent.putExtra("required_parameters", bundle);
                                         startActivity(intent);
                                         if (getActivity() != null) {
                                             getActivity().finish();
                                         }
                                     } else {
                                         Log.e(TAG, "Error from server : " + body.getErrorMsg());
-                                        showSnackbar("Login failed, please check your credential.");
+                                        showSnackbar("Error from server : " + body.getErrorMsg());
                                     }
+                                } else {
+                                    Log.wtf(TAG, "onResponse but not body is null");
+                                    showSnackbar("Sorry, We have a problem (body is null)");
                                 }
                             } else {
                                 Log.e(TAG, "onResponse but not successful : " + response.message());
@@ -150,7 +158,7 @@ public class LoginFragment extends Fragment implements View.OnClickListener {
                         }
 
                         @Override
-                        public void onFailure(Call<ResponseLogin<ResultLogin>> call,
+                        public void onFailure(Call<Response<ResultLogin>> call,
                                               Throwable t) {
                             Log.e(TAG, "onFailure : " + t.toString(), t);
                             showSnackbar("Connect server error, please check your connection.");
@@ -161,6 +169,17 @@ public class LoginFragment extends Fragment implements View.OnClickListener {
         if (id == R.id.button_reset) {
             resetField();
         }
+    }
+
+    private Bundle packBundle(String tokenUser,
+                              String employeeId,
+                              String groupId) {
+        Bundle result = new Bundle();
+        result.putString("token_user", tokenUser);
+        result.putString("employee_id", employeeId);
+        result.putString("group_id", groupId);
+
+        return result;
     }
 
     private int getGroupId(int selectedItemPosition) {
