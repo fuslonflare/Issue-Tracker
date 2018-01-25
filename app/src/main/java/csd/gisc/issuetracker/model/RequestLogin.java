@@ -6,12 +6,12 @@ import com.google.gson.annotations.SerializedName;
  * Created by admin on 16/1/2561.
  */
 
-public class CredentialDao {
+public class RequestLogin {
     @SerializedName("username") private String username;
     @SerializedName("password") private String password;
     @SerializedName("GroupID") private int groupId;
 
-    public CredentialDao(String username, String password, int groupId) {
+    public RequestLogin(String username, String password, int groupId) {
         this.username = username;
         this.password = password;
         this.groupId = groupId;

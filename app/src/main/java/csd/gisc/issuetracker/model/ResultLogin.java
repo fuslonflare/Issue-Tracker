@@ -6,7 +6,7 @@ import com.google.gson.annotations.SerializedName;
  * Created by admin on 16/1/2561.
  */
 
-public class ResultCredentialDao {
+public class ResultLogin {
     @SerializedName("employee_id")
     private String employeeId;
     @SerializedName("group_id")
